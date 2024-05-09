@@ -6,7 +6,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   const config = new DocumentBuilder()
   .setTitle('Lessons API')
-  .setDescription('discription of the api')
+  .setDescription('"yarn start" to run server')
   .setVersion('1.0')
   .addTag('lessons')
   .build()
