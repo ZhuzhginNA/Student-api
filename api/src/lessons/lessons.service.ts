@@ -5,6 +5,25 @@ import { Lessons } from 'src/entity/lessons.entity'
 import { Evaluations } from 'src/entity/evaluations.entity'
 import { Users } from 'src/entity/users.entity' 
 
+    interface User {
+    id: number;
+    name: string;
+    email: string;
+  }
+  
+  interface Evaluation {
+    id: string;
+    score: string;
+    user: User;
+  }
+  
+  export type Lesson  = {
+    id: number;
+    name: string;
+    code: string;
+    evaluations: Evaluation[]
+  }
+
 @Injectable()
 export class LessonsService {
   constructor(
@@ -19,16 +38,9 @@ export class LessonsService {
     private usersRepository: Repository<Evaluations>,
   ) {}
 
-  async getLessons(): Promise<any> {
-    
-    //const lessons = await this.evaluationsRepository.find({relations: ["evaluations"]})
-
-    // const user = await this.usersRepository.find()
-
+  async getLessons(): Promise<Lesson[]> {
     const lesson = await this.lessonsRepository.find()
-
-
-    const temp: number[] = await Promise.all(lesson.map(async (lesson): Promise<any> => {
+    const temp = await Promise.all(lesson.map(async (lesson): Promise<any> => {
         const evaluations = await this.evaluationsRepository.find({where: {
             lessons: lesson
         },
@@ -39,14 +51,14 @@ export class LessonsService {
 
            return {
                id: evaluation.id,
-               score: evaluation.score,
+               score: String(evaluation.score),
                user: evaluation.users
            }
 
         })
 
         return {...lesson, evaluations: ans}
-    }));
+    }))
 
 
     return temp
